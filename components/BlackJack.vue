@@ -10,6 +10,16 @@ import {utils} from "~/mixins/utils";
 // a 3-as handeket (A x 2) nem veszem figyelembe, mert a játékos úgy döntene, hogy az ász értékét 11-nek veszi.
 export const POSSIBLE_BLACKJACK_HANDS = [4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] as const
 export type PossibleBlackJackHand = typeof POSSIBLE_BLACKJACK_HANDS[number]
+
+export const PRIZES = [
+  'Nem nyert :(',
+  '500 Ft<br> Ötszáz',
+  '1.000 Ft<br> Ezer',
+  '5.000 Ft<br> Ötezer',
+  '10.000 Ft<br>Tízezer',
+  '100.000 Ft<br> Százezer',
+] as const
+export type Prize = typeof PRIZES[number]
 export default defineComponent({
   name: "BlackJack",
   mounted() {
@@ -19,9 +29,9 @@ export default defineComponent({
     return {
       handAmount: 4,
       isWinner: false,
-      prize: 'Nem nyert :(',
+      prize: 'Nem nyert :(' as Prize,
       handValues: [] as PossibleBlackJackHand[],
-      dealerHandValue: 0,
+      dealerHandValue: 4 as PossibleBlackJackHand
     }
   },
   methods: {
@@ -38,14 +48,14 @@ export default defineComponent({
       this.handValues = handValues
     },
     calculateDealerHandValue() {
-      let possibleDealerHands: Partial<PossibleBlackJackHand[]> = [...POSSIBLE_BLACKJACK_HANDS]
+      let possibleDealerHands: PossibleBlackJackHand[] = [...POSSIBLE_BLACKJACK_HANDS]
       if(this.isWinner) {
         possibleDealerHands = POSSIBLE_BLACKJACK_HANDS.filter(hand => hand < this.highestHandValue)
       } else {
         possibleDealerHands = POSSIBLE_BLACKJACK_HANDS.filter(hand => hand > this.highestHandValue)
       }
       const randomIndex = Math.floor(Math.random() * possibleDealerHands.length)
-      this.dealerHandValue = possibleDealerHands[randomIndex] || 4
+      this.dealerHandValue = possibleDealerHands[randomIndex]
     },
     setIfWinner(chance: number) {
       if (chance >= 0.7) {
@@ -84,7 +94,7 @@ export default defineComponent({
           return curr
         }
         return acc
-      }, 4 as PossibleBlackJackHand)
+      }, 4)
     },
   },
   mixins: [utils],

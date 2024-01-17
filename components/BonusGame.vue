@@ -18,8 +18,9 @@ export default defineComponent({
         throw new Error('targetSum must be greater than amountOfNumbers')
       }
       // amountOfNumbers számú számot generálok, amelyek összege targetSum
+      // 0-t nem engedélyezem, és azt sem hogy az összeg magasabb legyen mint 21.
       // a legmagasabb szám nem lehet nagyobb, mint az [1, 2, 3, ...] számtani sorozat első amountOfNumbers - 1 elemeinek összege
-      //számtani sorozatok összege: Sn=(a1+an)⋅n/2
+      // számtani sorozatok összege: Sn=(a1+an)⋅n/2
       let ceil = targetSum - (amountOfNumbers) * (amountOfNumbers - 1) / 2;
       for (let i = 0; i < amountOfNumbers - 1; i++) {
         let randomNumber = Math.floor(Math.random() * ceil) + 1;
@@ -34,8 +35,8 @@ export default defineComponent({
       if (chance >= 0.5) {
         this.generateBonusGameNumbers()
       } else {
-        const randomNumberBetween4And21 = Math.floor(Math.random() * 18) + 4
-        this.generateBonusGameNumbers(randomNumberBetween4And21)
+        const randomNumberBetween4And20 = Math.floor(Math.random() * 17) + 4
+        this.generateBonusGameNumbers(randomNumberBetween4And20)
       }
     },
   },

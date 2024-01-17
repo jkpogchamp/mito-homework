@@ -20,8 +20,20 @@ export default defineComponent({
       let mouseX = 0
       let mouseY = 0
       let isDragged = false
+      interface Events {
+        mouse: {
+          down: string,
+          up: string,
+          move: string,
+        },
+        touch: {
+          down: string,
+          up: string,
+          move: string,
+        },
+      }
 
-      let events = {
+      let events: Events = {
         mouse: {
           down: 'mousedown',
           up: 'mouseup',
@@ -34,15 +46,15 @@ export default defineComponent({
         },
       }
 
-      let deviceType = ""
+      let deviceType: 'mouse' | 'touch' = 'mouse'
 
       const isTouchDevice = () => {
         try {
           document.createEvent("TouchEvent");
-          deviceType = "touch"
+          deviceType = 'touch'
           return true;
         } catch (e) {
-          deviceType = "mouse"
+          deviceType = 'mouse'
           return false;
         }
       }
@@ -51,20 +63,19 @@ export default defineComponent({
       let rectTop = canvas.getBoundingClientRect().top
 
       const getXY = (e) => {
-        mouseX = (!isTouchDevice() ? e.pageX : e.touches[0].pageX) - rectLeft
-        mouseY = (!isTouchDevice() ? e.pageY : e.touches[0].pageY) - rectTop
+        mouseX = (isTouchDevice() ? e.touches[0].pageX : e.pageX) - rectLeft
+        mouseY = (isTouchDevice() ? e.touches[0].pageY : e.pageY) - rectTop
       }
-      const scratch = (x, y)=> {
+      const scratch = (x: number, y: number)=> {
         ctx.globalCompositeOperation = 'destination-out'
         ctx.beginPath()
         ctx.arc(x, y, 32, 0,  2*Math.PI,)
         ctx.fill();
       }
 
-      isTouchDevice()
       canvas.addEventListener(events[deviceType].down, (e) => {
         isDragged = true
-        getXY(e)
+        getXY(e as TouchEvent | MouseEvent)
         scratch(mouseX, mouseY)
       })
 
@@ -73,7 +84,7 @@ export default defineComponent({
           e.preventDefault();
         }
         if (isDragged) {
-          getXY(e)
+          getXY(e as TouchEvent)
           scratch(mouseX, mouseY)
         }
       })
